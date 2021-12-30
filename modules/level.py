@@ -17,7 +17,7 @@ class Level:
     def __init__(self, number, display, score_manager):
         self.path = PathGenerator(number)
         self.number = number
-        self.ball_generator = BallGenerator(number * 5, self.path, score_manager)
+        self.ball_generator = BallGenerator(number * 20, self.path, score_manager)
         self.frog = Frog()
         self.skull = Skull(self.path, self.ball_generator.balls, score_manager)
         self.display = display
