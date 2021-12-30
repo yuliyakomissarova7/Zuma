@@ -22,12 +22,8 @@ class ShootManager:
                                                            self.shooting_balls[-1].time).microseconds > 300000:
             shooting_ball = self.charged_ball
             shooting_ball.set_points(target)
-            self.charged_ball = self.recharge()
+            self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()), self.pos)
             self.shooting_balls.append(shooting_ball)
-
-    def recharge(self):
-        return ShootBall(random.choice(
-            self.ball_generator.which_ball_colors_available()), self.pos)
 
     def draw_sprite(self, screen):
         self.charged_ball.draw_sprite(screen)
@@ -58,7 +54,8 @@ class ShootManager:
                     if self.charged_ball.color not in \
                             self.ball_generator.which_ball_colors_available() and \
                             len(self.ball_generator.balls) != 0:
-                        self.charged_ball = self.recharge()
+                        self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
+                                                      self.pos)
                 else:
                     ball_index = self.ball_generator.balls.index(ball)
                     self.ball_generator.insert(ball_index, shooting_ball)
