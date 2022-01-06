@@ -8,6 +8,8 @@ from modules.score_manager import ScoreManager
 
 
 class Zuma:
+    FPS = 50
+
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("ZUMA")
@@ -18,7 +20,6 @@ class Zuma:
         self.level = Level(self.level_num, self.display, self.score_manager)
         self.is_quit = False
         self.clock = pygame.time.Clock()
-        self.FPS = 60
 
     def start(self):
         while not self.is_quit:
@@ -89,6 +90,8 @@ class Zuma:
         if self.score_manager.is_lose_game:
             self.continue_game(self.level.new_game_button,
                                self.level.lose_game_display)
+            if self.score_manager.count_of_lives == 0:
+                self.score_manager.count_of_lives = 3
             self.level_num = 1
             self.score_manager = ScoreManager(self.score_manager.count_of_lives)
         else:

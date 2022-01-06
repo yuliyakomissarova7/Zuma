@@ -25,8 +25,8 @@ class Cheats:
         keyboard_dictionary = pygame.key.get_pressed()
         if keyboard_dictionary[pygame.K_LCTRL] and keyboard_dictionary[pygame.K_LSHIFT] and \
                 keyboard_dictionary[pygame.K_a]:
-            if self.score_manager.count_of_lives < 5:
-                self.score_manager.count_of_lives += 1
+            if self.score_manager.count_of_lives < 3:
+                self.score_manager.count_of_lives = 3
 
     def slowing_down_balls(self):
         keyboard_dictionary = pygame.key.get_pressed()
