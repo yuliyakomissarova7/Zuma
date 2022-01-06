@@ -2,17 +2,17 @@ import datetime
 import random
 
 from modules.parameters import *
+from modules.bonuses.bonuses import Bonuses
 from modules.sprite_manager.ball_for_shoot import ShootBall
 
 
 class ShootManager:
-    def __init__(self, ball_generator, pos, score_manager):
+    def __init__(self, ball_generator, position, score_manager, bonus_manager):
         self.ball_generator = ball_generator
         self.score_manager = score_manager
-
-        self.pos = pos
-        self.charged_ball = ShootBall(random.choice(
-            self.ball_generator.colors), self.pos)
+        self.position = position
+        self.charged_ball = ShootBall(random.choice(self.ball_generator.colors), self.position)
+        self.bonus_manager = bonus_manager
         self.shooting_balls = []
         self.combo_chain = []
         self.speed = 15
@@ -22,7 +22,8 @@ class ShootManager:
                                                            self.shooting_balls[-1].time).microseconds > 300000:
             shooting_ball = self.charged_ball
             shooting_ball.set_points(target)
-            self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()), self.pos)
+            self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
+                                          self.position)
             self.shooting_balls.append(shooting_ball)
 
     def draw_sprite(self, screen):
@@ -46,16 +47,16 @@ class ShootManager:
     def handle_shoot(self, shooting_ball):
         for ball in self.ball_generator.balls:
             if shooting_ball.rect.colliderect(ball.rect):
-                chain = self.collect_chain(ball, shooting_ball.color)
-                if len(chain) > 1:
-                    chain += self.check_for_bonus(chain)
+                chain = self.find_chain(ball, shooting_ball.color)
+                if len(chain) >= 2:
+                    self.check_for_bonus(chain)
                     self.score_manager.add_score(20 * len(chain))
                     self.ball_generator.destroy(chain)
                     if self.charged_ball.color not in \
                             self.ball_generator.which_ball_colors_available() and \
                             len(self.ball_generator.balls) != 0:
                         self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
-                                                      self.pos)
+                                                      self.position)
                 else:
                     ball_index = self.ball_generator.balls.index(ball)
                     self.ball_generator.insert(ball_index, shooting_ball)
@@ -63,31 +64,20 @@ class ShootManager:
                 break
 
     def check_for_bonus(self, chain):
+        for ball in chain:
+            if ball.bonus is Bonuses.Pause:
+                self.bonus_manager.start(ball.bonus)
         return []
 
-    def collect_chain(self, ball, color):
+    def find_chain(self, ball, color):
         ball_index = self.ball_generator.balls.index(ball)
         ball_color = ball.color
 
-        left_half = self.collect_half_chain(ball_index - 1, -1, color)
-        right_half = self.collect_half_chain(ball_index + 1, 1, color)
+        left_half = self.ball_generator.find_half_of_chain(ball_index - 1, -1, color)
+        right_half = self.ball_generator.find_half_of_chain(ball_index + 1, 1, color)
 
         if ball_color == color:
-            chain = left_half + [self.ball_generator.balls[ball_index]] + \
-                    right_half
-            chain.sort(key=lambda ball: ball.path_position)
-
+            chain = left_half + [self.ball_generator.balls[ball_index]] + right_half
             return chain
 
         return right_half
-
-    def collect_half_chain(self, i, delta, color):
-        half_chain = []
-        while len(self.ball_generator.balls) > i >= 0 and \
-                self.ball_generator.balls[i].color == color:
-            half_chain.append(self.ball_generator.balls[i])
-            i += delta
-
-        return half_chain
-
-    
