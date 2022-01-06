@@ -7,22 +7,24 @@ from modules.path_generator import PathGenerator
 from modules.shoot_manager import ShootManager
 from modules.sprite_manager.frog import Frog
 from modules.sprite_manager.skull import Skull
-from modules.ui.ui_objects.display import Display
-from modules.ui.ui_objects.inscriptions import Inscription
 from modules.ball_generator import BallGenerator
-from modules.ui.ui_objects.button import Button
+from modules.ui_objects.display import Display
+from modules.ui_objects.inscriptions import Inscription
+from modules.ui_objects.button import Button
+from modules.cheats import Cheats
 
 
 class Level:
     def __init__(self, number, display, score_manager):
         self.path = PathGenerator(number)
         self.number = number
-        self.ball_generator = BallGenerator(number * 20, self.path, score_manager)
+        self.ball_generator = BallGenerator(number * 50, self.path, score_manager)
         self.frog = Frog()
         self.skull = Skull(self.path, self.ball_generator.balls, score_manager)
         self.display = display
-        self.bonus_manager = BonusManager()
-        self.shooting_manager = ShootManager(self.ball_generator, self.frog.position, score_manager)
+        self.bonus_manager = BonusManager(self.ball_generator)
+        self.cheats = Cheats(self.bonus_manager, score_manager)
+        self.shooting_manager = ShootManager(self.ball_generator, self.frog.position, score_manager, self.bonus_manager)
 
         self.level_inscription = Inscription(f'LEVEL {number}', (100, 40), font_size=30)
         images = [self.path, self.frog, self.skull, self.ball_generator, self.shooting_manager]
@@ -36,14 +38,12 @@ class Level:
                                             text_color=WHITE)
         self.lose_level_display = Display(BACKGROUND_COLOR,
                                           buttons=[self.start_level_again_btn])
-        self.finish_btn = Button('Закончить', (WIDTH // 2, HEIGHT // 2 +
-                                               2 * 80))
-        self.start_game_again_btn = Button('RESTART', DISPLAY_CENTER)
+        self.start_game_again_btn = Button('EXIT', DISPLAY_CENTER)
         self.win_label = Inscription('WIN!', (WIDTH // 2, HEIGHT // 2 - 2 * 80), font_size=30)
         self.win_game_display = Display(buttons=[self.start_game_again_btn],
                                         inscriptions=[self.win_label])
 
-        self.new_game_button = Button('RESTART', DISPLAY_CENTER,
+        self.new_game_button = Button('NEW GAME', DISPLAY_CENTER,
                                       background=BLACK,
                                       text_color=WHITE)
         self.lose_game_display = Display(BACKGROUND_COLOR, buttons=[self.new_game_button])
@@ -60,8 +60,8 @@ class Level:
 
     def put_label(self, label, color=BACKGROUND_COLOR):
         pygame.draw.rect(self.display, color, (label.x_start - label.width / 2,
-                                              label.y_start, label.width,
-                                              label.height))
+                                               label.y_start, label.width,
+                                               label.height))
         self.display.blit(label.text, (label.x_start, label.y_start))
 
     def draw_button(self, button):
@@ -72,7 +72,7 @@ class Level:
         pygame.draw.rect(self.display, button.background,
                          (x_start, y_start, width, height))
         self.display.blit(button.font.render(button.text, True,
-                                            button.text_color), title_params)
+                                             button.text_color), title_params)
         button.rect = pygame.Rect((x_start, y_start, width, height))
 
     def draw_level_display(self, display):
@@ -86,4 +86,3 @@ class Level:
             sprite.draw_sprite(self.display)
         for button in display.buttons:
             self.draw_button(button)
-
