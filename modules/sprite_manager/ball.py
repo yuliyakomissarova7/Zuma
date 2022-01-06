@@ -29,6 +29,8 @@ class Ball(pygame.sprite.Sprite):
 
     def draw_sprite(self, display):
         pygame.draw.circle(display, self.color, self.rect.center, BALL_DIAMETER / 2)
+        if self.bonus is not None:
+            display.blit(pygame.image.load(PAUSE), (self.rect.x + 5, self.rect.y + 5))
 
     def set_position(self, path_position):
         self.path_position = path_position

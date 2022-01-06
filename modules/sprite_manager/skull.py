@@ -2,7 +2,6 @@ import pygame
 
 from modules.colors import *
 from modules.parameters import *
-from modules.score_manager import ScoreManager
 
 
 class Skull(pygame.sprite.Sprite):
