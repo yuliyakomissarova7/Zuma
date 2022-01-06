@@ -1,5 +1,5 @@
-import ssl
-import sys
+import datetime
+
 import pygame
 
 from modules.parameters import *
@@ -8,8 +8,6 @@ from modules.score_manager import ScoreManager
 
 
 class Zuma:
-    FPS = 50
-
     def __init__(self):
         pygame.init()
         pygame.display.set_caption("ZUMA")
@@ -20,6 +18,7 @@ class Zuma:
         self.level = Level(self.level_num, self.display, self.score_manager)
         self.is_quit = False
         self.clock = pygame.time.Clock()
+        self.FPS = 60
 
     def start(self):
         while not self.is_quit:
@@ -37,10 +36,7 @@ class Zuma:
                     self.is_quit = True
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     self.level.shooting_manager.shoot(pygame.mouse.get_pos())
-            self.level.frog.update()
-            self.level.ball_generator.update()
-            self.level.skull.update()
-            self.level.shooting_manager.update()
+            self.update_level()
             self.update_display(self.level.level_display)
             self.clock.tick(self.FPS)
             if self.score_manager.is_lose_game:
@@ -49,6 +45,22 @@ class Zuma:
             elif self.score_manager.is_win_game:
                 is_game_finish = True
                 self.handle_win()
+
+    def update_level(self):
+        self.level.frog.update()
+        self.level.shooting_manager.update()
+        self.level.ball_generator.update()
+        self.level.bonus_manager.update()
+        self.level.skull.update()
+        self.level.cheats.update()
+        self.check_slowing_cheat()
+
+    def check_slowing_cheat(self):
+        if self.level.cheats.slowing is True:
+            self.FPS = 20
+            if (datetime.datetime.now() - self.level.cheats.start_time).seconds == 5:
+                self.FPS = 60
+                self.level.cheats.slowing = False
 
     def handle_win(self):
         if self.level_num != 2:
@@ -68,9 +80,6 @@ class Zuma:
                     self.is_quit = True
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     if self.level.start_game_again_btn.rect.collidepoint(mouse):
-                        on_win_window = False
-                        self.level_num = 1
-                    elif self.level.finish_btn.rect.collidepoint(mouse):
                         self.is_quit = True
 
             self.update_display(self.level.win_game_display)
