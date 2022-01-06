@@ -14,7 +14,7 @@ class BallGenerator:
         self.balls = []
         self.need_generate = number_of_balls
         self.generated = 0
-        self.reverse = False
+        self.pause = False
 
     def generate_balls(self):
         if self.generated < self.need_generate and (len(self.balls) == 0 or
@@ -24,18 +24,35 @@ class BallGenerator:
 
     def update_chain(self):
         for i in range(1, len(self.balls)):
-            right_ball, left_ball = self.balls[i], self.balls[i - 1]
+            right_ball = self.balls[i]
+            left_ball = self.balls[i - 1]
             if right_ball.path_position - left_ball.path_position > 20:
+                self.dont_move_balls(i)
                 if right_ball.color == left_ball.color:
-                    self.join_balls(i - 1)
-                else:
-                    self.stop_balls(i)
+                    chain_of_ball = self.find_chain(left_ball, left_ball.color)
+                    self.check_same_color_balls(chain_of_ball)
+                    break
 
-    def join_balls(self, index):
-        for i in range(index, len(self.balls)):
-            self.balls[i].set_position(self.balls[i - 1].path_position + BALL_DIAMETER // self.path.step)
+    def check_same_color_balls(self, chain_of_ball):
+        if len(chain_of_ball) >= 3:
+            self.score_manager.add_score(20 * len(chain_of_ball))
+            self.destroy(chain_of_ball)
 
-    def stop_balls(self, index):
+    def find_chain(self, ball, color):
+        index = self.balls.index(ball)
+        left_half = self.find_half_of_chain(index, -1, color)
+        right_half = self.find_half_of_chain(index + 1, 1, color)
+        return left_half + right_half
+
+    def find_half_of_chain(self, i, delta, color):
+        half_chain = []
+        while len(self.balls) > i >= 0 and \
+                self.balls[i].color == color:
+            half_chain.append(self.balls[i])
+            i += delta
+        return half_chain
+
+    def dont_move_balls(self, index):
         for i in range(index, len(self.balls)):
             self.balls[i].can_move = False
 
@@ -46,8 +63,7 @@ class BallGenerator:
                 if i == 0:
                     self.balls[i].can_move = True
 
-                elif self.balls[i - 1].can_move and \
-                        self.balls[i - 1].rect.colliderect(self.balls[i].rect):
+                elif self.balls[i - 1].can_move and self.balls[i - 1].rect.colliderect(self.balls[i].rect):
                     self.balls[i].can_move = True
 
     def insert(self, index, shooting_ball):
@@ -66,11 +82,16 @@ class BallGenerator:
         return ball
 
     def which_ball_colors_available(self):
-        return [ball.color for ball in self.balls]
+        available_colors = []
+        for ball in self.balls:
+            if ball.color not in available_colors:
+                available_colors.insert(0, ball.color)
+        return available_colors
 
     def update(self):
         self.update_chain()
-        self.update_balls()
+        if not self.pause:
+            self.update_balls()
         if len(self.balls) == 0 and self.generated == self.need_generate:
             self.score_manager.game_win()
 
