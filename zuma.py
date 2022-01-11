@@ -90,12 +90,14 @@ class Zuma:
         if self.score_manager.is_lose_game:
             self.continue_game(self.level.new_game_button,
                                self.level.lose_game_display)
-            if self.score_manager.count_of_lives == 0:
-                self.score_manager.count_of_lives = 3
             if self.level_num == 1:
+                self.level_num = 1
+            elif self.level_num == 2 and self.score_manager.count_of_lives == 0:
                 self.level_num = 1
             else:
                 self.level_num = 2
+            if self.score_manager.count_of_lives == 0:
+                self.score_manager.count_of_lives = 3
             self.score_manager = ScoreManager(self.score_manager.count_of_lives)
         else:
             self.continue_game(self.level.start_level_again_btn,
