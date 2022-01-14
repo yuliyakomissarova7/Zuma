@@ -1,8 +1,10 @@
 import random
 
+from modules.bonuses.bonuses import Bonuses
 from modules.colors import *
 from modules.parameters import *
 from modules.sprite_manager.ball import Ball
+from modules.bonus_manager import BonusManager
 
 
 class BallGenerator:
@@ -10,6 +12,7 @@ class BallGenerator:
         self.score_manager = score_manager
         self.colors = [BLUE, GREEN, RED, YELLOW]
         self.number_of_balls = number_of_balls
+        self.bonus_manager = BonusManager(self)
         self.path = path
         self.balls = []
         self.need_generate = number_of_balls
@@ -31,6 +34,9 @@ class BallGenerator:
                 if right_ball.color == left_ball.color and right_ball.path_position - left_ball.path_position == 21:
                     chain_of_ball = self.find_chain(left_ball, left_ball.color)
                     self.check_same_color_balls(chain_of_ball)
+                    for ball in chain_of_ball:
+                        if ball.bonus is Bonuses.Pause:
+                            self.bonus_manager.start(ball.bonus)
                     break
 
     def check_same_color_balls(self, chain_of_ball):
@@ -90,6 +96,7 @@ class BallGenerator:
 
     def update(self):
         self.update_chain()
+        self.bonus_manager.update()
         if not self.pause:
             self.update_balls()
         if len(self.balls) == 0 and self.generated == self.need_generate:

@@ -18,7 +18,7 @@ class ShootManager:
         self.speed = 15
 
     def shoot(self, target):
-        if len(self.shooting_balls) == 0:
+        if len(self.shooting_balls) == 0 or self.speed:
             shooting_ball = self.charged_ball
             shooting_ball.set_points(target)
             self.shooting_balls.append(shooting_ball)
@@ -39,7 +39,7 @@ class ShootManager:
 
     def remove_flown_away(self, ball):
         x, y = ball.rect.center[0], ball.rect.center[1]
-        if (x or y) < 0 or x > WIDTH or y > HEIGHT:
+        if x < 0 or x > WIDTH or y < 0 or y > HEIGHT:
             self.shooting_balls.remove(ball)
 
     def handle_shoot(self, shooting_ball):
