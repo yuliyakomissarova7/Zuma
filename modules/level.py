@@ -31,22 +31,22 @@ class Level:
         self.level_display = Display(inscriptions=[self.level_inscription], images=[image for image in images])
 
         self.continue_btn = Button('CONTINUE', DISPLAY_CENTER)
-        self.win_level_display = Display(buttons=[self.continue_btn])
+        self.continue_display = Display(buttons=[self.continue_btn])
 
-        self.start_level_again_btn = Button('RESTART', DISPLAY_CENTER,
-                                            background=BLACK,
-                                            text_color=WHITE)
-        self.lose_level_display = Display(BACKGROUND_COLOR,
-                                          buttons=[self.start_level_again_btn])
-        self.start_game_again_btn = Button('EXIT', DISPLAY_CENTER)
+        self.restart_btn = Button('RESTART', DISPLAY_CENTER,
+                                  background=BLACK,
+                                  text_color=WHITE)
+        self.restart_display = Display(BACKGROUND_COLOR,
+                                       buttons=[self.restart_btn])
+        self.exit_btn = Button('EXIT', DISPLAY_CENTER)
         self.win_label = Inscription('WIN!', (WIDTH // 2, HEIGHT // 2 - 2 * 80), font_size=30)
-        self.win_game_display = Display(buttons=[self.start_game_again_btn],
+        self.win_game_display = Display(buttons=[self.exit_btn],
                                         inscriptions=[self.win_label])
 
         self.new_game_button = Button('NEW GAME', DISPLAY_CENTER,
                                       background=BLACK,
                                       text_color=WHITE)
-        self.lose_game_display = Display(BACKGROUND_COLOR, buttons=[self.new_game_button])
+        self.new_game_display = Display(BACKGROUND_COLOR, buttons=[self.new_game_button])
 
     def show_score(self, points):
         points_label = Inscription(f'SCORE: {points}', (300, 40), font_size=20)

@@ -23,8 +23,7 @@ class Ball(pygame.sprite.Sprite):
         if self.can_move:
             self.path_position += 1
             if self.path_position >= 0:
-                self.position = pygame.math.Vector2(
-                    self.path.ball_positions[self.path_position])
+                self.position = pygame.math.Vector2(self.path.ball_positions[self.path_position])
                 self.rect.center = (round(self.position.x), round(self.position.y))
 
     def draw_sprite(self, display):

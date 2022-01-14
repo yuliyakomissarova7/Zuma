@@ -18,13 +18,12 @@ class ShootManager:
         self.speed = 15
 
     def shoot(self, target):
-        if len(self.shooting_balls) == 0 or self.speed or (datetime.datetime.now() -
-                                                           self.shooting_balls[-1].time).microseconds > 300000:
+        if len(self.shooting_balls) == 0:
             shooting_ball = self.charged_ball
             shooting_ball.set_points(target)
+            self.shooting_balls.append(shooting_ball)
             self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
                                           self.position)
-            self.shooting_balls.append(shooting_ball)
 
     def draw_sprite(self, screen):
         self.charged_ball.draw_sprite(screen)
@@ -39,9 +38,8 @@ class ShootManager:
             self.handle_shoot(ball)
 
     def remove_flown_away(self, ball):
-        x = ball.rect.center[0]
-        y = ball.rect.center[1]
-        if x < 0 or x > WIDTH or y < 0 or y > HEIGHT:
+        x, y = ball.rect.center[0], ball.rect.center[1]
+        if (x or y) < 0 or x > WIDTH or y > HEIGHT:
             self.shooting_balls.remove(ball)
 
     def handle_shoot(self, shooting_ball):
@@ -52,8 +50,7 @@ class ShootManager:
                     self.check_for_bonus(chain)
                     self.score_manager.add_score(20 * len(chain))
                     self.ball_generator.destroy(chain)
-                    if self.charged_ball.color not in \
-                            self.ball_generator.which_ball_colors_available() and \
+                    if self.charged_ball.color not in self.ball_generator.which_ball_colors_available() and \
                             len(self.ball_generator.balls) != 0:
                         self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
                                                       self.position)

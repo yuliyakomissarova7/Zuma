@@ -1,5 +1,4 @@
 import math
-
 import pygame
 
 from modules.parameters import *
@@ -17,8 +16,8 @@ class ShootBall(pygame.sprite.Sprite):
     def set_points(self, target):
         self.point = (target[0] - self.rect.center[0],
                       target[1] - self.rect.center[1])
-        self.point = (self.point[0] / math.hypot(self.point[0], self.point[1]), self.point[1]
-                      / math.hypot(self.point[0], self.point[1]))
+        self.point = (self.point[0] / math.hypot(self.point[0], self.point[1]),
+                      self.point[1] / math.hypot(self.point[0], self.point[1]))
 
     def update(self):
         self.rect.center = (self.rect.center[0] + self.point[0] * self.speed,

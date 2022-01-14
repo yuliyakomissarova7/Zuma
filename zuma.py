@@ -66,7 +66,7 @@ class Zuma:
     def handle_win(self):
         if self.level_num != 2:
             self.continue_game(self.level.continue_btn,
-                               self.level.win_level_display)
+                               self.level.continue_display)
             self.level_num += 1
             self.score_manager.setup_next_level()
         else:
@@ -80,7 +80,7 @@ class Zuma:
                 if event.type == pygame.QUIT:
                     self.is_quit = True
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.level.start_game_again_btn.rect.collidepoint(mouse):
+                    if self.level.exit_btn.rect.collidepoint(mouse):
                         self.is_quit = True
 
             self.update_display(self.level.win_game_display)
@@ -89,7 +89,7 @@ class Zuma:
         self.score_manager.take_live()
         if self.score_manager.is_lose_game:
             self.continue_game(self.level.new_game_button,
-                               self.level.lose_game_display)
+                               self.level.new_game_display)
             if self.level_num == 1:
                 self.level_num = 1
             elif self.level_num == 2 and self.score_manager.count_of_lives == 0:
@@ -100,8 +100,8 @@ class Zuma:
                 self.score_manager.count_of_lives = 3
             self.score_manager = ScoreManager(self.score_manager.count_of_lives)
         else:
-            self.continue_game(self.level.start_level_again_btn,
-                               self.level.lose_level_display)
+            self.continue_game(self.level.restart_btn,
+                               self.level.restart_display)
             self.score_manager.setup_next_level()
 
     def continue_game(self, button, window):

@@ -35,13 +35,10 @@ class PathGenerator:
                 point_index += 1
                 if point_index == len(self.points):
                     break
-                direction = self.new_direction(point_index, pos)
-
-    def new_direction(self, point_index, pos):
-        direction = pygame.math.Vector2((self.points[point_index][0] - pos[0],
-                                         self.points[point_index][1] - pos[1]))
-        return pygame.math.Vector2((direction[0] / math.hypot(*direction),
-                                    direction[1] / math.hypot(*direction)))
+                new_direct = pygame.math.Vector2((self.points[point_index][0] - pos[0],
+                                                  self.points[point_index][1] - pos[1]))
+                direction = pygame.math.Vector2((new_direct[0] / math.hypot(*new_direct),
+                                                 new_direct[1] / math.hypot(*new_direct)))
 
     def draw_sprite(self, display):
         for i in range(len(self.points) - 1):

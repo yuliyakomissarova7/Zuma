@@ -28,7 +28,7 @@ class BallGenerator:
             left_ball = self.balls[i - 1]
             if right_ball.path_position - left_ball.path_position > 20:
                 self.dont_move_balls(i)
-                if right_ball.color == left_ball.color:
+                if right_ball.color == left_ball.color and right_ball.path_position - left_ball.path_position == 21:
                     chain_of_ball = self.find_chain(left_ball, left_ball.color)
                     self.check_same_color_balls(chain_of_ball)
                     break
