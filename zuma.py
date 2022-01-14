@@ -51,7 +51,6 @@ class Zuma:
         self.level.frog.update()
         self.level.shooting_manager.update()
         self.level.ball_generator.update()
-        self.level.bonus_manager.update()
         self.level.skull.update()
         self.level.cheats.update()
         self.check_slowing_cheat()
