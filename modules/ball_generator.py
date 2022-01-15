@@ -34,10 +34,13 @@ class BallGenerator:
                 if right_ball.color == left_ball.color and right_ball.path_position - left_ball.path_position == 21:
                     chain_of_ball = self.find_chain(left_ball, left_ball.color)
                     self.check_same_color_balls(chain_of_ball)
-                    for ball in chain_of_ball:
-                        if ball.bonus is Bonuses.Pause:
-                            self.bonus_manager.start(ball.bonus)
+                    self.check_for_bonus(chain_of_ball)
                     break
+
+    def check_for_bonus(self, chain_of_ball):
+        for ball in chain_of_ball:
+            if ball.bonus is Bonuses.Pause:
+                self.bonus_manager.start(ball.bonus)
 
     def check_same_color_balls(self, chain_of_ball):
         if len(chain_of_ball) >= 3:
@@ -68,7 +71,6 @@ class BallGenerator:
             if not self.balls[i].can_move:
                 if i == 0:
                     self.balls[i].can_move = True
-
                 elif self.balls[i - 1].can_move and self.balls[i - 1].rect.colliderect(self.balls[i].rect):
                     self.balls[i].can_move = True
 

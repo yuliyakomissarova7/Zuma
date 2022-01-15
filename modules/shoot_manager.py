@@ -47,7 +47,7 @@ class ShootManager:
             if shooting_ball.rect.colliderect(ball.rect):
                 chain = self.find_chain(ball, shooting_ball.color)
                 if len(chain) >= 2:
-                    self.check_for_bonus(chain)
+                    self.ball_generator.check_for_bonus(chain)
                     self.score_manager.add_score(20 * len(chain))
                     self.ball_generator.destroy(chain)
                     if self.charged_ball.color not in self.ball_generator.which_ball_colors_available() and \
@@ -59,12 +59,6 @@ class ShootManager:
                     self.ball_generator.insert(ball_index, shooting_ball)
                 self.shooting_balls.remove(shooting_ball)
                 break
-
-    def check_for_bonus(self, chain):
-        for ball in chain:
-            if ball.bonus is Bonuses.Pause:
-                self.bonus_manager.start(ball.bonus)
-        return []
 
     def find_chain(self, ball, color):
         ball_index = self.ball_generator.balls.index(ball)
