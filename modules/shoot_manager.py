@@ -1,8 +1,6 @@
-import datetime
 import random
 
 from modules.parameters import *
-from modules.bonuses.bonuses import Bonuses
 from modules.sprite_manager.ball_for_shoot import ShootBall
 
 
@@ -18,12 +16,11 @@ class ShootManager:
         self.speed = 15
 
     def shoot(self, target):
-        if len(self.shooting_balls) == 0 or self.speed:
-            shooting_ball = self.charged_ball
-            shooting_ball.set_points(target)
-            self.shooting_balls.append(shooting_ball)
-            self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
-                                          self.position)
+        shooting_ball = self.charged_ball
+        shooting_ball.set_points(target)
+        self.shooting_balls.append(shooting_ball)
+        self.charged_ball = ShootBall(random.choice(self.ball_generator.which_ball_colors_available()),
+                                      self.position)
 
     def draw_sprite(self, screen):
         self.charged_ball.draw_sprite(screen)
