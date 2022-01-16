@@ -7,9 +7,8 @@ from modules.colors import *
 
 
 def check_moved_balls(balls, index):
-    if (not balls[i].can_move for i in range(0, index)) and (balls[i].can_move for i in range(index, len(balls))):
-        return True
-    return False
+    return True if ((not balls[i].can_move for i in range(0, index)) and
+                    (balls[i].can_move for i in range(index, len(balls)))) else False
 
 
 class TestBallGenerator:
@@ -66,7 +65,7 @@ class TestBallGenerator:
             actual_chain.insert(0, ball.color)
         assert actual_chain == []
 
-    def test_find_chain_when_exist_chain_and_startFromDifferentColor(self):
+    def test_find_chain_when_exist_chain_and_start_from_different_color(self):
         actual_chain = []
         for ball in self.ball_generator.find_chain(self.ball_generator.balls[3], RED):
             actual_chain.insert(0, ball.color)

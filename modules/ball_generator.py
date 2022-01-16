@@ -30,7 +30,8 @@ class BallGenerator:
             right_ball = self.balls[i]
             left_ball = self.balls[i - 1]
             if right_ball.path_position - left_ball.path_position > 20:
-                self.dont_move_balls(i)
+                for j in range(i, len(self.balls)):
+                    self.balls[j].can_move = False
                 if right_ball.color == left_ball.color and right_ball.path_position - left_ball.path_position == 21:
                     chain_of_ball = self.find_chain(left_ball, left_ball.color)
                     self.check_same_color_balls(chain_of_ball)
@@ -60,10 +61,6 @@ class BallGenerator:
             half_chain.append(self.balls[i])
             i += delta
         return half_chain
-
-    def dont_move_balls(self, index):
-        for i in range(index, len(self.balls)):
-            self.balls[i].can_move = False
 
     def update_balls(self):
         for i in range(len(self.balls)):

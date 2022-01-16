@@ -3,7 +3,6 @@ from modules.path_generator import PathGenerator
 from modules.ball_generator import BallGenerator
 from modules.sprite_manager.ball import Ball
 from modules.sprite_manager.ball_for_shoot import ShootBall
-from modules.sprite_manager.skull import Skull
 from modules.colors import *
 
 
